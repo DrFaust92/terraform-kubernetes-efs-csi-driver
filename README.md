@@ -14,4 +14,28 @@ module "efs_csi_driver" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12.6, < 0.14 |
+| kubernetes | ~> 1.11.4 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| kubernetes | ~> 1.11.4 |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| annotations | Optional annotations to add to EFS CSI driver resources | `map(string)` | `{}` | no |
+| namespace | Namespace for EFS CSI driver resources | `string` | `"kube-system"` | no |
+
+## Outputs
+
+No output.
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

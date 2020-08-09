@@ -4,6 +4,6 @@ resource "kubernetes_csi_driver" "efs" {
   }
 
   spec {
-    attach_required   = true
+    attach_required = true
   }
 }

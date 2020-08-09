@@ -6,6 +6,6 @@ variable "namespace" {
 
 variable "annotations" {
   description = "Optional annotations to add to EFS CSI driver resources"
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
 }
