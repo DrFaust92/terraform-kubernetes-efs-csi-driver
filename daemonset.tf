@@ -2,7 +2,7 @@ locals {
   name = "efs-csi-node"
   labels = {
     app                      = local.name
-    app.kubernetes.io / name = "aws-efs-csi-driver"
+    "app.kubernetes.io/name" = "aws-efs-csi-driver"
   }
 }
 
@@ -25,7 +25,7 @@ resource "kubernetes_daemonset" "efs" {
 
       spec {
         node_selector = {
-          beta.kubernetes.io / os = "linux"
+          "beta.kubernetes.io/os" = "linux"
         }
 
         toleration {
@@ -157,7 +157,7 @@ resource "kubernetes_daemonset" "efs" {
 
           host_path {
             path = "/var/lib/kubelet/plugins_registry/"
-            type = " Directory"
+            type = "Directory"
           }
         }
 
