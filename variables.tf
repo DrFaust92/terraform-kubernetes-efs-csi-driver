@@ -39,3 +39,9 @@ variable "labels" {
   default     = {}
   type        = map(string)
 }
+
+variable "host_aliases" {
+  description = "A map of host aliases"
+  default     = {}
+  type        = map(any)
+}
