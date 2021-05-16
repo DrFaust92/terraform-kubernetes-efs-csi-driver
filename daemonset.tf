@@ -28,6 +28,14 @@ resource "kubernetes_daemonset" "efs" {
           "beta.kubernetes.io/os" : "linux",
         }, var.extra_node_selectors, var.node_extra_node_selectors)
 
+        dynamic "host_aliases" {
+          for_each = var.host_aliases
+          content {
+            ip        = lookup(toleration.value, "ip", null)
+            hostnames = lookup(toleration.value, "hostnames", null)
+          }
+        }
+
         toleration {
           operator = "Exists"
         }
