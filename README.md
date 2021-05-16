@@ -72,5 +72,11 @@ module "efs_csi_driver" {
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_efs-csi_driver_controller_role_name"></a> [efs-csi\_driver\_controller\_role\_name](#output\_efs-csi\_driver\_controller\_role\_name) | The Name of the EBS CSI driver controller IAM role name |
+| <a name="output_efs_csi_driver_controller_role_arn"></a> [efs\_csi\_driver\_controller\_role\_arn](#output\_efs\_csi\_driver\_controller\_role\_arn) | The Name of the EBS CSI driver controller IAM role ARN |
+| <a name="output_efs_csi_driver_controller_role_policy_arn"></a> [efs\_csi\_driver\_controller\_role\_policy\_arn](#output\_efs\_csi\_driver\_controller\_role\_policy\_arn) | The Name of the EBS CSI driver controller IAM role policy ARN |
+| <a name="output_efs_csi_driver_controller_role_policy_name"></a> [efs\_csi\_driver\_controller\_role\_policy\_name](#output\_efs\_csi\_driver\_controller\_role\_policy\_name) | The Name of the EBS CSI driver controller IAM role policy name |
+| <a name="output_efs_csi_driver_name"></a> [efs\_csi\_driver\_name](#output\_efs\_csi\_driver\_name) | The Name of the EBS CSI driver |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
