@@ -32,12 +32,23 @@ resource "kubernetes_daemonset" "efs" {
           operator = "Exists"
         }
 
+        dynamic "toleration" {
+          for_each = var.csi_controller_tolerations
+          content {
+            key                = lookup(toleration.value, "key", null)
+            operator           = lookup(toleration.value, "operator", null)
+            effect             = lookup(toleration.value, "effect", null)
+            value              = lookup(toleration.value, "value", null)
+            toleration_seconds = lookup(toleration.value, "toleration_seconds", null)
+          }
+        }
+
         container {
           name              = "efs-plugin"
-          image             = "amazon/aws-efs-csi-driver:v1.0.0"
+          image             = "amazon/aws-efs-csi-driver:v1.2.0"
           image_pull_policy = "IfNotPresent"
 
-          args = ["--endpoint=$(CSI_ENDPOINT)", "--logtostderr", "--v=5"]
+          args = ["--endpoint=$(CSI_ENDPOINT)", "--logtostderr", "--v=${tostring(var.log_level)}"]
 
           env {
             name  = "CSI_ENDPOINT"
@@ -72,6 +83,18 @@ resource "kubernetes_daemonset" "efs" {
           }
 
           liveness_probe {
+            http_get {
+              path = "/healthz"
+              port = "healthz"
+            }
+
+            initial_delay_seconds = 10
+            timeout_seconds       = 3
+            period_seconds        = 2
+            failure_threshold     = 5
+          }
+
+          readiness_probe {
             http_get {
               path = "/healthz"
               port = "healthz"
