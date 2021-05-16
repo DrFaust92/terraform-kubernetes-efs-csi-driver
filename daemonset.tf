@@ -24,9 +24,9 @@ resource "kubernetes_daemonset" "efs" {
       }
 
       spec {
-        node_selector = {
-          "beta.kubernetes.io/os" = "linux"
-        }
+        node_selector = merge({
+          "beta.kubernetes.io/os" : "linux",
+        }, var.extra_node_selectors, var.node_extra_node_selectors)
 
         toleration {
           operator = "Exists"

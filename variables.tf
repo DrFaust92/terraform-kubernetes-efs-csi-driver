@@ -21,3 +21,15 @@ variable "log_level" {
   default     = 5
   type        = number
 }
+
+variable "extra_node_selectors" {
+  description = "A map of extra node selectors for all components"
+  default     = {}
+  type        = map(string)
+}
+
+variable "node_extra_node_selectors" {
+  description = "A map of extra node selectors for node pods"
+  default     = {}
+  type        = map(string)
+}
