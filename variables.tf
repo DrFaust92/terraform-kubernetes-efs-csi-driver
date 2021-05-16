@@ -81,3 +81,21 @@ variable "controller_annotations" {
   default     = {}
   type        = map(string)
 }
+
+variable "oidc_url" {
+  description = "EKS OIDC provider URL, to allow pod to assume role using IRSA"
+  type        = string
+  default     = ""
+}
+
+variable "efs_csi_controller_role_name" {
+  description = "The name of the EFS CSI driver IAM role"
+  default     = "efs-csi-driver-controller"
+  type        = string
+}
+
+variable "efs_csi_controller_role_policy_name_prefix" {
+  description = "The prefix of the EFS CSI driver IAM policy"
+  default     = "efs-csi-driver-policy"
+  type        = string
+}
