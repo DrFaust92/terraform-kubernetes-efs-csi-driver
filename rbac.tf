@@ -1,4 +1,6 @@
 resource "kubernetes_service_account" "csi_driver" {
+  count = var.create_controller ? 1 : 0
+
   metadata {
     name      = local.name
     namespace = var.namespace
@@ -7,6 +9,8 @@ resource "kubernetes_service_account" "csi_driver" {
 }
 
 resource "kubernetes_cluster_role" "provisioner" {
+  count = var.create_controller ? 1 : 0
+
   metadata {
     name = "efs-csi-external-provisioner-role"
   }
@@ -55,6 +59,8 @@ resource "kubernetes_cluster_role" "provisioner" {
 }
 
 resource "kubernetes_cluster_role_binding" "provisioner" {
+  count = var.create_controller ? 1 : 0
+
   metadata {
     name = "efs-csi-provisioner-binding"
   }
@@ -62,12 +68,12 @@ resource "kubernetes_cluster_role_binding" "provisioner" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.provisioner.metadata[0].name
+    name      = kubernetes_cluster_role.provisioner[0].metadata[0].name
   }
 
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account.csi_driver.metadata[0].name
-    namespace = kubernetes_service_account.csi_driver.metadata[0].namespace
+    name      = kubernetes_service_account.csi_driver[0].metadata[0].name
+    namespace = kubernetes_service_account.csi_driver[0].metadata[0].namespace
   }
 }
