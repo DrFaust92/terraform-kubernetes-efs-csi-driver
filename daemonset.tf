@@ -19,7 +19,7 @@ resource "kubernetes_daemonset" "efs" {
 
     template {
       metadata {
-        labels      = local.labels
+        labels      = merge(local.labels, var.labels)
         annotations = var.annotations
       }
 
