@@ -4,6 +4,9 @@ resource "kubernetes_service_account" "csi_driver" {
   metadata {
     name      = local.name
     namespace = var.namespace
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.efs_controller_role.iam_role_arn
+    }
   }
   automount_service_account_token = true
 }
