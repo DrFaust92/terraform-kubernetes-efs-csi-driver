@@ -1,11 +1,3 @@
-locals {
-  name = "efs-csi-node"
-  labels = {
-    app                      = local.name
-    "app.kubernetes.io/name" = "aws-efs-csi-driver"
-  }
-}
-
 resource "kubernetes_daemonset" "efs" {
   metadata {
     name      = local.name

@@ -28,6 +28,12 @@ variable "extra_node_selectors" {
   type        = map(string)
 }
 
+variable "controller_extra_node_selectors" {
+  description = "A map of extra node selectors for controller pods"
+  default     = {}
+  type        = map(string)
+}
+
 variable "node_extra_node_selectors" {
   description = "A map of extra node selectors for node pods"
   default     = {}
@@ -44,4 +50,34 @@ variable "host_aliases" {
   description = "A map of host aliases"
   default     = {}
   type        = map(any)
+}
+
+variable "create_controller" {
+  description = "Wheter to create a controller"
+  type        = bool
+  default     = false
+}
+
+variable "csi_controller_replica_count" {
+  description = "Number of EFS CSI driver controller pods"
+  type        = number
+  default     = 2
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  default     = {}
+  type        = map(string)
+}
+
+variable "delete_access_point_root_dir" {
+  description = "Wheter to delete the access point root dir"
+  type        = bool
+  default     = false
+}
+
+variable "controller_annotations" {
+  description = "A map of extra annotations for controller"
+  default     = {}
+  type        = map(string)
 }
