@@ -33,3 +33,9 @@ variable "node_extra_node_selectors" {
   default     = {}
   type        = map(string)
 }
+
+variable "labels" {
+  description = "A map of extra labels for all resources"
+  default     = {}
+  type        = map(string)
+}
