@@ -45,7 +45,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name              = "efs-plugin"
-          image             = "amazon/aws-efs-csi-driver:v1.2.0"
+          image             = "amazon/aws-efs-csi-driver:v1.3.6"
           image_pull_policy = "IfNotPresent"
 
           args = ["--endpoint=$(CSI_ENDPOINT)", "--logtostderr", "--v=${tostring(var.log_level)}"]
@@ -113,7 +113,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name  = "csi-driver-registrar"
-          image = "quay.io/k8scsi/csi-node-driver-registrar:v1.3.0"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13"
           args  = ["--csi-address=$(ADDRESS)", "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)", "--v=5"]
 
           env {
@@ -148,7 +148,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name  = "liveness-probe"
-          image = "quay.io/k8scsi/livenessprobe:v2.0.0"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13"
           args  = ["--csi-address=/csi/csi.sock", "--health-port=9809"]
 
           volume_mount {

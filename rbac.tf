@@ -4,8 +4,9 @@ resource "kubernetes_service_account" "csi_driver" {
   metadata {
     name      = local.name
     namespace = var.namespace
+    labels    = local.labels
     annotations = {
-      "eks.amazonaws.com/role-arn" = module.efs_controller_role.iam_role_arn
+      "eks.amazonaws.com/role-arn" = module.efs_controller_role[0].iam_role_arn
     }
   }
   automount_service_account_token = true
@@ -15,7 +16,8 @@ resource "kubernetes_cluster_role" "provisioner" {
   count = var.create_controller ? 1 : 0
 
   metadata {
-    name = "efs-csi-external-provisioner-role"
+    name   = "efs-csi-external-provisioner-role"
+    labels = local.labels
   }
 
   rule {
@@ -39,7 +41,7 @@ resource "kubernetes_cluster_role" "provisioner" {
   rule {
     api_groups = [""]
     resources  = ["events"]
-    verbs      = ["list", "watch", "create"]
+    verbs      = ["list", "watch", "create", "patch"]
   }
 
   rule {
@@ -65,7 +67,8 @@ resource "kubernetes_cluster_role_binding" "provisioner" {
   count = var.create_controller ? 1 : 0
 
   metadata {
-    name = "efs-csi-provisioner-binding"
+    name   = "efs-csi-provisioner-binding"
+    labels = local.labels
   }
 
   role_ref {
