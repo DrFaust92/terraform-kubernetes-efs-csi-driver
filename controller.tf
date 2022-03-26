@@ -4,7 +4,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
   metadata {
     name        = local.controller_name
     namespace   = var.namespace
-    labels      = var.labels
+    labels      = local.labels
     annotations = var.controller_annotations
   }
   spec {
@@ -30,7 +30,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
           "beta.kubernetes.io/os" : "linux",
         }, var.extra_node_selectors, var.controller_extra_node_selectors)
 
-        service_account_name            = kubernetes_service_account[0].csi_driver.metadata[0].name
+        service_account_name            = kubernetes_service_account.csi_driver[0].metadata[0].name
         automount_service_account_token = true
         priority_class_name             = "system-cluster-critical"
 
@@ -74,7 +74,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
           port {
             name           = "healthz"
-            container_port = 9808
+            container_port = 9909
             protocol       = "TCP"
           }
 
@@ -109,7 +109,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
         container {
           name  = "csi-provisioner"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-2"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-13"
           args = compact(
             [
               "--csi-address=$(ADDRESS)",
@@ -135,7 +135,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
           image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-2"
           args = [
             "--csi-address=/csi/csi.sock",
-            "--health-port=9808"
+            "--health-port=9909"
           ]
 
           volume_mount {
