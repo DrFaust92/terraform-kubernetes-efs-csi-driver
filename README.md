@@ -32,7 +32,7 @@ module "efs_csi_driver" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_efs_controller_role"></a> [efs\_controller\_role](#module\_efs\_controller\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc | 4.17.0 |
+| <a name="module_efs_controller_role"></a> [efs\_controller\_role](#module\_efs\_controller\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc | 4.24.1 |
 
 ## Resources
 
@@ -41,7 +41,7 @@ module "efs_csi_driver" {
 | [aws_iam_policy.efs_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [kubernetes_cluster_role.provisioner](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role) | resource |
 | [kubernetes_cluster_role_binding.provisioner](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding) | resource |
-| [kubernetes_csi_driver.efs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/csi_driver) | resource |
+| [kubernetes_csi_driver_v1.efs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/csi_driver_v1) | resource |
 | [kubernetes_daemonset.efs](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/daemonset) | resource |
 | [kubernetes_deployment.efs_csi_controller](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_service_account.csi_driver](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) | resource |

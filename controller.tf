@@ -154,6 +154,6 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
   depends_on = [
     kubernetes_cluster_role_binding.provisioner,
-    kubernetes_csi_driver.efs,
+    kubernetes_csi_driver_v1.efs,
   ]
 }
