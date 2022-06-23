@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
         container {
           name  = "efs-plugin"
-          image = "amazon/aws-efs-csi-driver:v1.3.8"
+          image = "amazon/aws-efs-csi-driver:v1.4.0"
           args = compact(
             [
               "--endpoint=$(CSI_ENDPOINT)",
