@@ -53,7 +53,7 @@ variable "host_aliases" {
 }
 
 variable "create_controller" {
-  description = "Wheter to create a controller"
+  description = "Whether to create a controller"
   type        = bool
   default     = false
 }
