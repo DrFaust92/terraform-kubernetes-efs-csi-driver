@@ -132,7 +132,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
         container {
           name  = "liveness-probe"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-2"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-21-7"
           args = [
             "--csi-address=/csi/csi.sock",
             "--health-port=9909"

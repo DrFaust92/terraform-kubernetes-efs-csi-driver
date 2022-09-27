@@ -148,7 +148,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name  = "liveness-probe"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-21-7"
           args  = ["--csi-address=/csi/csi.sock", "--health-port=9809"]
 
           volume_mount {
