@@ -109,7 +109,7 @@ resource "kubernetes_deployment" "efs_csi_controller" {
 
         container {
           name  = "csi-provisioner"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-18-13"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner:v2.1.1-eks-1-21-7"
           args = compact(
             [
               "--csi-address=$(ADDRESS)",
