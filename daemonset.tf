@@ -113,7 +113,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name  = "csi-driver-registrar"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-21-7"
           args  = ["--csi-address=$(ADDRESS)", "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)", "--v=5"]
 
           env {
