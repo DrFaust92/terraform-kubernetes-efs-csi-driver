@@ -45,7 +45,7 @@ resource "kubernetes_daemonset" "efs" {
 
         container {
           name              = "efs-plugin"
-          image             = "amazon/aws-efs-csi-driver:v1.4.5"
+          image             = "amazon/aws-efs-csi-driver:v1.4.6"
           image_pull_policy = "IfNotPresent"
 
           args = ["--endpoint=$(CSI_ENDPOINT)", "--logtostderr", "--v=${tostring(var.log_level)}"]
