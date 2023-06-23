@@ -45,3 +45,51 @@ variable "oidc_url" {
   type        = string
   default     = ""
 }
+
+variable "annotations" {
+  description = "Optional annotations to add to EFS CSI driver resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "controller_annotations" {
+  description = "A map of extra annotations for controller"
+  default     = {}
+  type        = map(string)
+}
+
+variable "labels" {
+  description = "A map of extra labels for all resources"
+  default     = {}
+  type        = map(string)
+}
+
+variable "extra_node_selectors" {
+  description = "A map of extra node selectors for all components"
+  default     = {}
+  type        = map(string)
+}
+
+variable "controller_extra_node_selectors" {
+  description = "A map of extra node selectors for controller pods"
+  default     = {}
+  type        = map(string)
+}
+
+variable "csi_controller_tolerations" {
+  description = "CSI driver controller tolerations"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "efs_csi_controller_role_name" {
+  description = "The name of the EFS CSI driver IAM role"
+  default     = ""
+  type        = string
+}
+
+variable "efs_csi_controller_role_policy_name_prefix" {
+  description = "The prefix of the EFS CSI driver IAM policy"
+  default     = ""
+  type        = string
+}

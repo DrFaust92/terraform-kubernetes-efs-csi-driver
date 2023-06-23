@@ -6,6 +6,7 @@ resource "kubernetes_daemonset" "efs_csi_node" {
     labels = merge({
       app = local.node_name
     }, local.labels)
+    annotations = var.annotations
   }
 
   spec {
@@ -94,6 +95,7 @@ resource "kubernetes_daemonset" "efs_csi_node" {
           port {
             name           = "healthz"
             container_port = 9809
+            host_port      = 9809
             protocol       = "TCP"
           }
 

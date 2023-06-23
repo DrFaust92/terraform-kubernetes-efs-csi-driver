@@ -7,5 +7,5 @@ locals {
 
   labels = merge({
     "app.kubernetes.io/name" = local.name
-  }, var.tags)
+  }, var.tags, var.labels)
 }

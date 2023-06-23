@@ -1,7 +1,8 @@
 resource "kubernetes_deployment" "efs_csi_controller" {
   metadata {
-    name      = local.controller_name
-    namespace = var.namespace
+    name        = local.controller_name
+    namespace   = var.namespace
+    annotations = var.controller_annotations
     labels = merge({
       app = local.controller_name
     }, local.labels)
@@ -37,7 +38,20 @@ resource "kubernetes_deployment" "efs_csi_controller" {
           }
         }
 
-        node_selector = var.node_selector
+        node_selector = var.node_selector != {} ? var.node_selector : merge({
+          "beta.kubernetes.io/os" : "linux",
+        }, var.extra_node_selectors, var.controller_extra_node_selectors)
+
+        dynamic "toleration" {
+          for_each = var.csi_controller_tolerations
+          content {
+            key                = lookup(toleration.value, "key", null)
+            operator           = lookup(toleration.value, "operator", null)
+            effect             = lookup(toleration.value, "effect", null)
+            value              = lookup(toleration.value, "value", null)
+            toleration_seconds = lookup(toleration.value, "toleration_seconds", null)
+          }
+        }
 
         volume {
           name = "socket-dir"

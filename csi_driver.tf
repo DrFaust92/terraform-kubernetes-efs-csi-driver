@@ -5,6 +5,7 @@ resource "kubernetes_csi_driver_v1" "efs_csi_aws_com" {
   }
 
   spec {
-    attach_required = false
+    attach_required        = false
+    volume_lifecycle_modes = ["Persistent"]
   }
 }
