@@ -99,6 +99,10 @@ resource "kubernetes_daemonset" "efs_csi_node" {
             protocol       = "TCP"
           }
 
+          resources {
+            requests = var.daemonset_resources.requests
+          }
+
           env {
             name  = "CSI_ENDPOINT"
             value = "unix:/csi/csi.sock"

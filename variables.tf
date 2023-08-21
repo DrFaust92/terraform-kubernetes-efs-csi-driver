@@ -64,6 +64,19 @@ variable "labels" {
   type        = map(string)
 }
 
+variable "daemonset_resources" {
+  type = object({
+    requests = map(string)
+  })
+  default = {
+    requests = {
+      cpu    = "20m"
+      memory = "128Mi"
+    }
+  }
+  description = "Requests for daemonset"
+}
+
 variable "extra_node_selectors" {
   description = "A map of extra node selectors for all components"
   default     = {}
