@@ -1,0 +1,21 @@
+name: Generate documentation
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  docs:
+    runs-on: [Linux, X64]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20
+      - run: go install github.com/terraform-docs/terraform-docs@v0.16.0
+      - run: terraform-docs markdown table --indent 2 --output-mode=inject --output-file=README.md --output-template='<!-- BEGIN_TF_DOCS -->\n{{ .Content }}\n<!-- END_TF_DOCS -->' .
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: README.md
+          message: update documentation

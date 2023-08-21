@@ -1,162 +1,31 @@
-resource "kubernetes_daemonset" "efs" {
+resource "kubernetes_daemonset" "efs_csi_node" {
   metadata {
-    name      = local.name
+    name      = local.node_name
     namespace = var.namespace
+
+    labels = merge({
+      app = local.node_name
+    }, local.labels)
+    annotations = var.annotations
   }
 
   spec {
     selector {
-      match_labels = local.labels
+      match_labels = {
+        app                      = local.node_name
+        "app.kubernetes.io/name" = local.name
+      }
     }
 
     template {
       metadata {
-        labels      = merge(local.labels, var.labels)
-        annotations = var.annotations
+        labels = {
+          app                      = local.node_name
+          "app.kubernetes.io/name" = local.name
+        }
       }
 
       spec {
-        node_selector = merge({
-          "beta.kubernetes.io/os" : "linux",
-        }, var.extra_node_selectors, var.node_extra_node_selectors)
-
-        dynamic "host_aliases" {
-          for_each = var.host_aliases
-          content {
-            ip        = lookup(toleration.value, "ip", null)
-            hostnames = lookup(toleration.value, "hostnames", null)
-          }
-        }
-
-        toleration {
-          operator = "Exists"
-        }
-
-        dynamic "toleration" {
-          for_each = var.csi_controller_tolerations
-          content {
-            key                = lookup(toleration.value, "key", null)
-            operator           = lookup(toleration.value, "operator", null)
-            effect             = lookup(toleration.value, "effect", null)
-            value              = lookup(toleration.value, "value", null)
-            toleration_seconds = lookup(toleration.value, "toleration_seconds", null)
-          }
-        }
-
-        container {
-          name              = "efs-plugin"
-          image             = "amazon/aws-efs-csi-driver:v1.5.7"
-          image_pull_policy = "IfNotPresent"
-
-          args = ["--endpoint=$(CSI_ENDPOINT)", "--logtostderr", "--v=${tostring(var.log_level)}"]
-
-          env {
-            name  = "CSI_ENDPOINT"
-            value = "unix:/csi/csi.sock"
-          }
-
-          volume_mount {
-            mount_path        = "/var/lib/kubelet"
-            name              = "kubelet-dir"
-            mount_propagation = "Bidirectional"
-          }
-
-          volume_mount {
-            mount_path = "/csi"
-            name       = "plugin-dir"
-          }
-
-          volume_mount {
-            mount_path = "/var/run/efs"
-            name       = "efs-state-dir"
-          }
-
-          volume_mount {
-            mount_path = "/etc/amazon/efs"
-            name       = "efs-utils-config"
-          }
-
-          port {
-            name           = "healthz"
-            container_port = 9809
-            protocol       = "TCP"
-          }
-
-          liveness_probe {
-            http_get {
-              path = "/healthz"
-              port = "healthz"
-            }
-
-            initial_delay_seconds = 10
-            timeout_seconds       = 3
-            period_seconds        = 2
-            failure_threshold     = 5
-          }
-
-          readiness_probe {
-            http_get {
-              path = "/healthz"
-              port = "healthz"
-            }
-
-            initial_delay_seconds = 10
-            timeout_seconds       = 3
-            period_seconds        = 2
-            failure_threshold     = 5
-          }
-
-          security_context {
-            privileged = true
-          }
-        }
-
-        container {
-          name  = "csi-driver-registrar"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.1.0-eks-1-18-13"
-          args  = ["--csi-address=$(ADDRESS)", "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)", "--v=5"]
-
-          env {
-            name  = "ADDRESS"
-            value = "/csi/csi.sock"
-          }
-
-          env {
-            name  = "DRIVER_REG_SOCK_PATH"
-            value = "/var/lib/kubelet/plugins/efs.csi.aws.com/csi.sock"
-          }
-
-          env {
-            name = "KUBE_NODE_NAME"
-            value_from {
-              field_ref {
-                field_path = "spec.nodeName"
-              }
-            }
-          }
-
-          volume_mount {
-            mount_path = "/csi"
-            name       = "plugin-dir"
-          }
-
-          volume_mount {
-            mount_path = "/registration"
-            name       = "registration-dir"
-          }
-        }
-
-        container {
-          name  = "liveness-probe"
-          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.2.0-eks-1-18-13"
-          args  = ["--csi-address=/csi/csi.sock", "--health-port=9809"]
-
-          volume_mount {
-            mount_path = "/csi"
-            name       = "plugin-dir"
-          }
-        }
-
         volume {
           name = "kubelet-dir"
 
@@ -197,12 +66,179 @@ resource "kubernetes_daemonset" "efs" {
           name = "efs-utils-config"
 
           host_path {
+            path = "/var/amazon/efs"
+            type = "DirectoryOrCreate"
+          }
+        }
+
+        volume {
+          name = "efs-utils-config-legacy"
+
+          host_path {
             path = "/etc/amazon/efs"
             type = "DirectoryOrCreate"
           }
         }
 
-        host_network        = true
+        container {
+          name  = "efs-plugin"
+          image = "amazon/aws-efs-csi-driver:${var.driver_release}"
+          args = [
+            "--endpoint=$(CSI_ENDPOINT)",
+            "--logtostderr",
+            "--v=${tostring(var.log_level)}",
+            "--vol-metrics-opt-in=false",
+            "--vol-metrics-refresh-period=240",
+            "--vol-metrics-fs-rate-limit=5"
+          ]
+
+          port {
+            name           = "healthz"
+            container_port = 9809
+            host_port      = 9809
+            protocol       = "TCP"
+          }
+
+          resources {
+            requests = var.daemonset_resources.requests
+          }
+
+          env {
+            name  = "CSI_ENDPOINT"
+            value = "unix:/csi/csi.sock"
+          }
+
+          volume_mount {
+            name              = "kubelet-dir"
+            mount_path        = "/var/lib/kubelet"
+            mount_propagation = "Bidirectional"
+          }
+
+          volume_mount {
+            name       = "plugin-dir"
+            mount_path = "/csi"
+          }
+
+          volume_mount {
+            name       = "efs-state-dir"
+            mount_path = "/var/run/efs"
+          }
+
+          volume_mount {
+            name       = "efs-utils-config"
+            mount_path = "/var/amazon/efs"
+          }
+
+          volume_mount {
+            name       = "efs-utils-config-legacy"
+            mount_path = "/etc/amazon/efs-legacy"
+          }
+
+          liveness_probe {
+            http_get {
+              path = "/healthz"
+              port = "healthz"
+            }
+
+            initial_delay_seconds = 10
+            timeout_seconds       = 3
+            period_seconds        = 2
+            failure_threshold     = 5
+          }
+
+          image_pull_policy = "IfNotPresent"
+
+          security_context {
+            privileged = true
+          }
+        }
+
+        container {
+          name  = "csi-driver-registrar"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/node-driver-registrar:v2.6.2-eks-1-25-latest"
+          args = [
+            "--csi-address=$(ADDRESS)",
+            "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)",
+            "--v=${tostring(var.log_level)}",
+          ]
+
+          env {
+            name  = "ADDRESS"
+            value = "/csi/csi.sock"
+          }
+
+          env {
+            name  = "DRIVER_REG_SOCK_PATH"
+            value = "/var/lib/kubelet/plugins/efs.csi.aws.com/csi.sock"
+          }
+
+          env {
+            name = "KUBE_NODE_NAME"
+
+            value_from {
+              field_ref {
+                field_path = "spec.nodeName"
+              }
+            }
+          }
+
+          volume_mount {
+            name       = "plugin-dir"
+            mount_path = "/csi"
+          }
+
+          volume_mount {
+            name       = "registration-dir"
+            mount_path = "/registration"
+          }
+
+          image_pull_policy = "IfNotPresent"
+        }
+
+        container {
+          name  = "liveness-probe"
+          image = "public.ecr.aws/eks-distro/kubernetes-csi/livenessprobe:v2.8.0-eks-1-25-latest"
+          args = [
+            "--csi-address=/csi/csi.sock",
+            "--health-port=9809",
+            "--v=${tostring(var.log_level)}",
+          ]
+
+          volume_mount {
+            name       = "plugin-dir"
+            mount_path = "/csi"
+          }
+
+          image_pull_policy = "IfNotPresent"
+        }
+
+        dns_policy = "ClusterFirst"
+
+        node_selector = {
+          "kubernetes.io/os" = "linux"
+        }
+
+        service_account_name = local.node_name
+        host_network         = true
+
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key      = "eks.amazonaws.com/compute-type"
+                  operator = "NotIn"
+                  values   = ["fargate"]
+                }
+              }
+            }
+          }
+        }
+
+        toleration {
+          operator = "Exists"
+        }
+
         priority_class_name = "system-node-critical"
       }
     }
