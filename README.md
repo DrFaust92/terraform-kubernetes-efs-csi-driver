@@ -54,10 +54,10 @@ module "efs_csi_driver" {
 | <a name="input_annotations"></a> [annotations](#input\_annotations) | Optional annotations to add to EFS CSI driver resources | `map(string)` | `{}` | no |
 | <a name="input_controller_annotations"></a> [controller\_annotations](#input\_controller\_annotations) | A map of extra annotations for controller | `map(string)` | `{}` | no |
 | <a name="input_controller_extra_node_selectors"></a> [controller\_extra\_node\_selectors](#input\_controller\_extra\_node\_selectors) | A map of extra node selectors for controller pods | `map(string)` | `{}` | no |
-| <a name="input_create_controller"></a> [create\_controller](#input\_create\_controller) | Wheter to create a controller | `bool` | `false` | no |
+| <a name="input_create_controller"></a> [create\_controller](#input\_create\_controller) | Whether to create a controller | `bool` | `false` | no |
 | <a name="input_csi_controller_replica_count"></a> [csi\_controller\_replica\_count](#input\_csi\_controller\_replica\_count) | Number of EFS CSI driver controller pods | `number` | `2` | no |
 | <a name="input_csi_controller_tolerations"></a> [csi\_controller\_tolerations](#input\_csi\_controller\_tolerations) | CSI driver controller tolerations | `list(map(string))` | `[]` | no |
-| <a name="input_delete_access_point_root_dir"></a> [delete\_access\_point\_root\_dir](#input\_delete\_access\_point\_root\_dir) | Wheter to delete the access point root dir | `bool` | `false` | no |
+| <a name="input_delete_access_point_root_dir"></a> [delete\_access\_point\_root\_dir](#input\_delete\_access\_point\_root\_dir) | Whether to delete the access point root dir | `bool` | `false` | no |
 | <a name="input_efs_csi_controller_role_name"></a> [efs\_csi\_controller\_role\_name](#input\_efs\_csi\_controller\_role\_name) | The name of the EFS CSI driver IAM role | `string` | `"efs-csi-driver-controller"` | no |
 | <a name="input_efs_csi_controller_role_policy_name_prefix"></a> [efs\_csi\_controller\_role\_policy\_name\_prefix](#input\_efs\_csi\_controller\_role\_policy\_name\_prefix) | The prefix of the EFS CSI driver IAM policy | `string` | `"efs-csi-driver-policy"` | no |
 | <a name="input_extra_node_selectors"></a> [extra\_node\_selectors](#input\_extra\_node\_selectors) | A map of extra node selectors for all components | `map(string)` | `{}` | no |
