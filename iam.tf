@@ -55,7 +55,7 @@ module "efs_controller_role" {
   count = var.create_controller ? 1 : 0
 
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "4.24.1"
+  version                       = "5.47.1"
   create_role                   = true
   role_description              = "EFS CSI Driver Role"
   role_name_prefix              = var.efs_csi_controller_role_name
